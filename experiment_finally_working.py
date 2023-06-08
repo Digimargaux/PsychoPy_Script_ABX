@@ -10,15 +10,15 @@ win = visual.Window(size=[800, 600], fullscr=False, units="pix")
 # Instructions text
 instructions = visual.TextStim(win, text="Thank you for participating in this experiment!\n\nYou will hear three voice samples.\nAfter hearing all three sounds, please indicate as fast as you can which of the first two samples is closest to the third one.\n\nPress any key to start.")
 
-# Display instructions and wait for key press
+# Displays the instructions and wait for key press to start
 instructions.draw()
 win.flip()
 event.waitKeys()
 
-# Sound directory
+# Sound directory(this is mine)
 sound_dir = "C:/Users/marga/OneDrive/Bureau/Travaux_ecole/Travaux_Memoire/Corpus/stimuli"
 
-# Group sound files by speaker
+# Sorts sound files by speaker name
 sound_files_by_speaker = {}
 for filename in os.listdir(sound_dir):
     if filename.endswith(".wav"):
@@ -27,7 +27,7 @@ for filename in os.listdir(sound_dir):
             sound_files_by_speaker[speaker] = []
         sound_files_by_speaker[speaker].append(os.path.join(sound_dir, filename))
 
-# Create trials for each speaker
+# This will create trials for each speaker and play sound a and b in shuffle (my own sounds, use your own)
 trials_list = []
 for speaker, sound_files in sound_files_by_speaker.items():
     random.shuffle(sound_files)
@@ -44,22 +44,22 @@ for speaker, sound_files in sound_files_by_speaker.items():
         }
         trials_list.append(block)
 
-# Set number of repetitions for each block
+# Sets the number of repetitions for each block
 n_reps = 1
 
-# Trial handler for blocks
+# The trial handler for blocks
 trials = data.TrialHandler(trialList=trials_list, nReps=n_reps, method="sequential")
 
-#file path for the results
+#File path for the results (again, my own)
 results_file_path = "C:/Users/marga/OneDrive/Bureau/Travaux_ecole/Travaux_Memoire/results"
 
-# Present blocks on screen
+# Presents  the blocks on screen
 results = []
 for i, trial in enumerate(trials):
     block_num = i + 1
     block = trial
     
-    # Sound stimuli creation
+    # creates my sound stimuli
     sound_A = sound.Sound(block["A"])
     sound_B = sound.Sound(block["B"])
     sound_X = sound.Sound(block["X"])
@@ -84,7 +84,7 @@ for i, trial in enumerate(trials):
             win.flip()
         core.wait(0.5)
 
-    # Create and play sound X
+    # Creates and play sound X
     sound_X = sound.Sound(block["X"])
     prompt_text = visual.TextStim(win, text="Sound X")
     sound_X.setVolume(1)
@@ -96,32 +96,32 @@ for i, trial in enumerate(trials):
     core.wait(0.5)
     
 
-    # Display answer prompt
+    # Displays the answer prompt
     prompt_text = visual.TextStim(win, text="Which sound was closest to X?\n\nPress s for the first sound\nPress d for the second sound")
     prompt_text.draw()
     prompt_onset = win.flip()
     
-    # Collect response
+    # Collects the response choice, I used key s and d.
     keys = event.waitKeys(keyList=["s", "d"])
     rt = core.getTime() - prompt_onset
     
-    # determine which sound was chosen
+    # determines which sound was chosen
     if keys[0] == "s":
         chosen_sound = "A"
     else:
         chosen_sound = "B"
 
-    # write result to file
+    # writes the result to file (this is a csv file)
     with open('results.csv', 'a') as f:
         f.write(f"{block_num},{rt},{chosen_sound}\n")
 
     print(f"Block {block_num}: RT={rt}, Chosen sound={chosen_sound}")
     
-# Create and present end message
+# Creates and present end message and waits a little 
 end_message = visual.TextStim(win, text="The experiment is over.\nThank you for your participation.\n\nDon't forget your free candy.")
 end_message.draw()
 win.flip()
 core.wait(3)
 
-# Clean up
+# quits
 core.quit()
