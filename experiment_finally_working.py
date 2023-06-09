@@ -101,7 +101,8 @@ for i, trial in enumerate(trials):
     prompt_text.draw()
     prompt_onset = win.flip()
     
-    # Collects the response choice, I used key s and d.
+    # Collects the response choice, I used key s and d. You can also record the response time. Here the response time is 
+    #recorded right after the end of the question prompt.
     keys = event.waitKeys(keyList=["s", "d"])
     rt = core.getTime() - prompt_onset
     
